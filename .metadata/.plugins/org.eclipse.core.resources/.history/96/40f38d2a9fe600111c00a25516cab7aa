@@ -1,0 +1,165 @@
+/**
+ * Nicholas Borromeo
+ * Simple Compiler
+ * SyntaxAnalyzer Class
+ */
+ 
+import java.util.*;
+import java.lang.*;
+import java.io.*;
+
+public class SyntaxAnalyzer {
+	
+	private Vector tokenList = new Vector();
+	private int tokenIndex = 0;
+	private Tokens tok = null;
+	
+    public SyntaxAnalyzer() {
+    	
+    }
+    
+    public SyntaxAnalyzer(Vector tokens, int index) {
+    	tokenList = tokens;
+    	tokenIndex = index;
+    }
+    
+    public void displayTokens(){
+    	for(int i=0; i<tokenList.size(); i++){
+    		tok = (Tokens)tokenList.elementAt(i);
+    		System.out.println(tok.getToken() +" line no: "+ tok.getLineNum());
+    	}
+    	
+    }//end displayTokens
+    
+    public boolean checkNode(String terminal){
+    	boolean matchFlag;
+    	
+    	tok = (Tokens)tokenList.elementAt(tokenIndex);
+    	if(terminal.equals(tok.getToken())){
+    		//System.out.println("its a match! token index: "+tokenIndex);
+    		if(tokenIndex == (tokenList.size()-1)){
+    			tokenIndex = tokenIndex - 1;
+    		}
+    		else
+    			tokenIndex++;
+    		//System.out.println("increment token index to next token which is "+tokenIndex);
+    		matchFlag = true;
+    	}
+    	else matchFlag = false;
+    	
+    	return matchFlag;
+    }//end checkNode
+    
+    public void printErrors(){
+    	while(tokenIndex <= (tokenList.size()-1)){
+    		tok = (Tokens)tokenList.elementAt(tokenIndex);
+    		System.out.println("Error at line "+tok.getLineNum()+": "+tok.getLexeme() + " is Irrelevant Code!");
+    		tokenIndex++;
+    	}
+    }//end printErrors
+    
+    public boolean Program(){
+    	if(checkNode("BeginSym")){
+    		Statements();
+    		if(checkNode("EndSym")){
+    			tokenIndex++;
+    			if(tokenIndex == (tokenList.size()-1))
+					return true;
+    			else
+					printErrors();
+    		}
+    		else{
+    			tok = (Tokens)tokenList.elementAt(tokenIndex-1);
+    			System.out.println("Error at line "+tok.getLineNum()+": Missing EndSym");
+    		}
+    		return true;	
+    	}
+    	else{
+    		tok = (Tokens)tokenList.elementAt(tokenIndex);
+    		System.out.println("Error at line "+tok.getLineNum()+": Missing BeginSym");
+    		
+    		return false;
+    	}
+    	
+    }//end Program
+    
+    public boolean Statements(){
+    	return StatementsPrime();
+    }//end Statements
+    
+    public boolean StatementsPrime(){
+    	if(checkNode("Id") && checkNode("AssignOp")){
+    		Expressions();
+    		if(checkNode("Semicolon"))
+    			StatementsPrime();
+    		else{
+    			tok = (Tokens)tokenList.elementAt(tokenIndex-1);
+    			System.out.println("Error at line "+tok.getLineNum()+": Missing ;");
+    			StatementsPrime();
+    		}
+    		return true;
+    	}
+    	if(!checkNode("Id") || !checkNode("AssignOp")){
+    		//null option of StatementsPrime
+    		return true;
+    	}
+    	else{
+    		tok = (Tokens)tokenList.elementAt(tokenIndex);
+    		System.out.println("Error at line "+tok.getLineNum()+": Missing Id or AssignOp");
+    		return false;
+    	}
+    }//end StatementsPrime
+    
+    public boolean Expressions(){
+    	if(checkNode("Lparen")){
+    		Expressions();
+    		if(checkNode("Rparen")){
+    			ExpressionsPrime();
+    		}
+    		else{
+    			tok = (Tokens)tokenList.elementAt(tokenIndex-1);
+    			System.out.println("Error at line "+tok.getLineNum()+": Missing )");
+    		return false;
+    		}
+    		return true;
+    	}
+    	if(checkNode("Id")){
+    		ExpressionsPrime();
+    		return true;
+    	}
+    	
+    	if(checkNode("IntLiteral")){
+    		ExpressionsPrime();
+    		return true;
+    	}
+    	else{
+    		tok = (Tokens)tokenList.elementAt(tokenIndex-1);
+    		System.out.println("Error at line "+tok.getLineNum()+": Missing IntLiteral, Lparen, Rparen or Id");
+    		return false;
+    	}
+    	
+    }//end Expressions
+    
+    public boolean ExpressionsPrime(){
+    	if(checkNode("MinusOp")){
+    		Expressions();
+    		ExpressionsPrime();
+    		return true;
+    	}
+    	if(checkNode("PlusOp")){
+    		Expressions();
+    		ExpressionsPrime();
+    		return true;
+    	}
+    	if(!checkNode("PlusOp") || !checkNode("MinusOp")){
+    		//null option of ExpressionPrime
+    		return true;
+    	}
+    	else{
+    		tok = (Tokens)tokenList.elementAt(tokenIndex-1);
+    		System.out.println("Error at line "+tok.getLineNum()+": Missing PlusOp or MinusOp");
+    		return false;
+    	}
+    	
+    }//end ExpressionsPrime
+}

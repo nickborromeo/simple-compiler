@@ -1,0 +1,20 @@
+Tokens              Lexeme
+BeginSym            Begin
+Id                  hello
+AssignOp            =
+IntLiteral          89
+MinusOp             -
+Id                  theWorld
+Id                  gg
+AssignOp            =
+Id                  hi
+AssignOp            =
+Lparen              (
+Id                  world
+PlusOp              +
+Semicolon           ;
+EndSym              End
+Id                  hi
+AssignOp            =
+EndSym              End
+EofSym              

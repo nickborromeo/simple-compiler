@@ -1,0 +1,58 @@
+/**
+ * Nicholas Borromeo
+ * Simple Compiler
+ * Tokens Class
+ */
+
+
+public class Tokens {
+
+	private String token;
+	private String lexeme;
+	private int lineNum;
+	
+    public Tokens() {
+    	token = "";
+    	lexeme = "";
+    }
+    
+    public Tokens(StringBuffer lex, String tok, int lNum){
+    	token = ""+tok;
+    	lexeme = ""+lex;
+    	lineNum = lNum;
+    }
+    
+     public Tokens(char lex, String tok, int lNum){
+    	token = ""+tok;
+    	lexeme = ""+lex;
+    	lineNum = lNum;
+    }
+    
+    public Tokens(String lex, String tok, int lNum){
+    	token = tok;
+    	lexeme = lex;
+    	lineNum = lNum;
+    }
+    
+    public Tokens(String lex, String tok){
+    	token = tok;
+    	lexeme = lex;
+    }
+    
+    public String getToken(){
+    	return token;
+    }
+    
+    public String getLexeme(){
+    	return lexeme;
+    }
+    
+    public int getLineNum(){
+    	return lineNum;
+    }
+    
+    public String toString(){
+    	return (token + "\t\t" + lexeme);
+    }
+    
+}

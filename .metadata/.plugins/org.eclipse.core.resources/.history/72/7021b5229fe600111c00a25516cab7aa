@@ -1,0 +1,5 @@
+<program> - BeginSym <statements> EndSym
+<statements> - <statements'>
+<statements'> - id AssignOp <expression> semicolon <statements'> | E
+<expression> - LParen <expression> RParen <expression'> | id <expression'> | intLiteral <expression'>
+<expression'> - MinusOp <expression> <expression'> | PlusOp <expression> <expression'> | E
