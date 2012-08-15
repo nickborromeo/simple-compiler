@@ -1,0 +1,6 @@
+Tokens              Lexeme
+BeginSym            Begin
+Id                  x
+Id                  y
+EndSym              End
+EofSym              
